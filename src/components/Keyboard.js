@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'react-bootstrap';
 
-const Keyboard = ({ onGuess }) => {
+const Keyboard = ({ onGuess, guessedLetters }) => {
   const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
   return (
@@ -11,6 +11,8 @@ const Keyboard = ({ onGuess }) => {
           key={letter}
           onClick={() => onGuess(letter)}
           className="m-1"
+          disabled={guessedLetters.includes(letter)} // Disable already guessed letters
+          variant={guessedLetters.includes(letter) ? 'secondary' : 'primary'} // Grey out guessed letters
         >
           {letter}
         </Button>

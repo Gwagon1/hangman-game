@@ -7,19 +7,22 @@ import Help from './Help';
 const words = ['REACT', 'JAVASCRIPT', 'HANGMAN', 'COMPUTER', 'PROGRAMMING'];
 
 function GameBoard() {
+  // Game state management
   const [word, setWord] = useState('');
   const [guessedLetters, setGuessedLetters] = useState([]);
   const [incorrectGuesses, setIncorrectGuesses] = useState(0);
   const [gameStatus, setGameStatus] = useState('playing'); // 'won', 'lost', 'playing'
   const maxIncorrectGuesses = 6;
 
+  // Initialize the word when the component mounts
   useEffect(() => {
     setWord(words[Math.floor(Math.random() * words.length)]);
   }, []);
 
+  // Determine if the game is won or lost
   useEffect(() => {
     const uniqueGuessedLetters = new Set(guessedLetters);
-    if (word.split('').every(letter => uniqueGuessedLetters.has(letter))) {
+    if (word && word.split('').every(letter => uniqueGuessedLetters.has(letter))) {
       setGameStatus('won');
     }
     if (incorrectGuesses >= maxIncorrectGuesses) {
@@ -27,7 +30,11 @@ function GameBoard() {
     }
   }, [guessedLetters, incorrectGuesses, word]);
 
+  // Handle letter guesses
   const handleGuess = (letter) => {
+    // Check if letter has already been guessed
+    if (guessedLetters.includes(letter)) return;
+
     if (word.includes(letter)) {
       setGuessedLetters([...guessedLetters, letter]);
     } else {
@@ -35,6 +42,7 @@ function GameBoard() {
     }
   };
 
+  // Restart the game
   const restartGame = () => {
     setWord(words[Math.floor(Math.random() * words.length)]);
     setGuessedLetters([]);
@@ -46,7 +54,7 @@ function GameBoard() {
     <div className="game-board">
       <HangmanDrawing incorrectGuesses={incorrectGuesses} />
       <Status word={word} guessedLetters={guessedLetters} gameStatus={gameStatus} />
-      <Keyboard onGuess={handleGuess} />
+      <Keyboard onGuess={handleGuess} guessedLetters={guessedLetters} />
       <Help />
       {gameStatus !== 'playing' && (
         <button onClick={restartGame} className="btn btn-primary">Restart Game</button>
